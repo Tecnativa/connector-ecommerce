@@ -31,7 +31,8 @@ class StockPicking(models.Model):
         # The key in the context avoid the event to be fired in
         # StockMove.action_done(). Allow to handle the partial pickings
         self_context = self.with_context(__no_on_event_out_done=True)
-        result = super(StockPicking, self_context).do_transfer()
+        for picking in self_context:
+            result = super(StockPicking, picking).do_transfer()
         session = ConnectorSession.from_env(self.env)
         for picking in self:
             if picking.picking_type_id.code != 'outgoing':
